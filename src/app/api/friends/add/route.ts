@@ -38,7 +38,6 @@ export async function POST(req: Request) {
         }
 
         // Check if trying add yourself
-
         if (idToAdd === session.user.id) {
             return new Response("You cannot add yourself as a friend", {
                 status: 400,
@@ -62,9 +61,9 @@ export async function POST(req: Request) {
 
         // if valid request, send friend request
 
-        db.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id);
+        await db.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id);
 
-        return;
+        return new Response("OK");
     } catch (error) {
         if (error instanceof z.ZodError) {
             return new Response("Invalid request payload", { status: 422 });
