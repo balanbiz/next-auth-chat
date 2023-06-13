@@ -7,6 +7,9 @@ import { notFound } from "next/navigation";
 import SignOutButton from "@/components/SignOutButton";
 import FriendRequestSidebarOptions from "@/components/FriendRequestSidebarOptions";
 import { fetchRedis } from "@/helpers/redis";
+import { getFriendsByUserId } from "@/helpers/get-friends-by-user-id";
+import { Sidebar } from "lucide-react";
+import SidebarChatList from "@/components/SidebarChatList";
 
 interface SidebarOption {
     id: number;
@@ -28,6 +31,8 @@ export default async function DashLayout({ children }: { children: React.ReactNo
     const session = await getServerSession(authOptions);
     if (!session) notFound();
 
+    const friends = await getFriendsByUserId(session.user.id);
+
     const unseenRequestCount = ((await fetchRedis("smembers", `user:${session.user.id}:incoming_friend_requests`)) as User[]).length;
     return (
         <div className="w-full flex h-screen">
@@ -35,10 +40,12 @@ export default async function DashLayout({ children }: { children: React.ReactNo
                 <Link href="/dashboard" className="flex h-16 shrink-0 items-center">
                     <Icons.Logo className="h-8 w-auto text-indigo-600" />
                 </Link>
-                <div className="text-xs font-semibold leading-6 text-gray-400">Your chats</div>
+                {friends.length > 0 ? <div className="text-xs font-semibold leading-6 text-gray-400">Your chats</div> : null}
                 <nav className="flex flex-1 flex-col">
                     <ul role="list" className="flex flex-1 flex-col gap-y-7">
-                        <li>{/* chats that user has */}</li>
+                        <li>
+                            <SidebarChatList sessionId={session.user.id} friends={friends} />
+                        </li>
                         <li>
                             <div className="text-xs font-semibold leading-6 text-gray-400">Overview</div>
 
