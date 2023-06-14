@@ -74,7 +74,7 @@ const ChatIdPage: FC<IChatIdPageProps> = async ({ params }) => {
             </div>
 
             <Messages
-                // chatId={chatId}
+                chatId={chatId}
                 chatPartner={chatPartner}
                 sessionImg={session.user.image}
                 sessionId={session.user.id}
