@@ -25,7 +25,7 @@ const DashboardPage: FC = async ({}) => {
                 -1
             )) as string[];
 
-            const lastMessage = JSON.parse(lastMessageRaw) as Message;
+            const lastMessage = lastMessageRaw === undefined ? "" : (JSON.parse(lastMessageRaw) as Message);
 
             return {
                 ...friend,
